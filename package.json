@@ -1,0 +1,1 @@
+{"name":"supermarket-basket","version":"6.0.0","private":true,"type":"module","scripts":{"test":"node --test","start":"node scripts/serve.js"},"engines":{"node":">=20"}}

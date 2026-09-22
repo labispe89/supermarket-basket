@@ -1,1 +1,1 @@
-{"name":"Καλάθι Supermarket","short_name":"Καλάθι","start_url":"./","scope":"./","display":"standalone","background_color":"#f5f7f5","theme_color":"#166534","lang":"el","description":"Σύγκριση καλαθιού supermarket σε ένα κατάστημα."}
+{"id":"./","name":"Καλάθι Supermarket","short_name":"Καλάθι","start_url":"./","scope":"./","display":"standalone","background_color":"#f5f7f5","theme_color":"#166534","lang":"el","description":"Σύγκριση πλήρους καλαθιού σε ένα supermarket.","icons":[{"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
