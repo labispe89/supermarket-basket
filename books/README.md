@@ -9,6 +9,7 @@ Node 20+: from repository root, `npm test`, then `npm start`. Open `http://127.0
 ## What works, and what does not
 
 - Manual observations and JSON imports work immediately. URLs are evidence links, never fetched. External source links open the site's home/search UI for manual inspection.
+- ISBN metadata can be filled on demand from the official [Open Library Search API](https://openlibrary.org/developers/api). It supplies bibliographic metadata only, never market price or availability. Requests occur only after a user action and successful responses are cached locally for 30 days, respecting Open Library's low-volume human-facing guidance and default one-request-per-second tier.
 - On-demand analysis searches your observations. Remote refresh downloads configured authorized JSON feeds, then uses the same matching engine. These are different actions in the UI.
 - **No production price feeds are configured. No live cross-market market scan or scheduled alerts are active by default.** No public read API/redistribution permission for all six markets was verified. An accessible webpage or undocumented internal endpoint is not treated as authorization.
 - Synthetic demo is opt-in, visibly labelled, not persisted and rejected by backend feeds/import. It is not a real deal. Closing demo restores the pre-demo list.
@@ -84,8 +85,11 @@ No backend account or credentials are assumed. Install the official Wrangler CLI
 | Vinted | Manual URLs/import | [Greek terms](https://www.vinted.gr/terms-and-conditions). No scraping adapter, login automation or private endpoint access. |
 | Other | Authorized normalized feed / manual | Operator must verify permission, provenance, units, freshness and redistribution rights. |
 
+Metadata-only sources are intentionally separate from price evidence. Open Library is enabled for user-triggered ISBN lookup. Google Books was reviewed but is not enabled because its public-data requests require an application API key; it can be added later without OAuth access to personal bookshelves. Neither source establishes resale value.
+
 Use each marketplace's own saved searches/alerts where available, then enter observations or import your permitted export. This MVP does not read email or platform accounts.
 
 ## Validation
 
 `npm test` runs the existing basket tests plus `books/test/*.test.js`: ISBN checksums/conversion and conflicts, fallback matching, price caps, fees, threshold boundaries, stale/future data, unknown indicators, source selection, deduplication, authentication, bounded feed reads, partial failures and scheduled alert deduplication. No live market fixtures in production. Test fixtures are explicitly synthetic.
+
