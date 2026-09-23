@@ -1,12 +1,5 @@
 # Supermarket Basket
 
-## Book arbitrage scanner
-
-The independent Greek book scanner is available at [`books/`](./books/). See
-[setup, source limitations, feed contract and deployment](./books/README.md).
-It supports manual observations, ISBN matching, adjustable BUY/WATCH thresholds
-and an optional authorized-feed backend. No live price feeds are preconfigured.
-
 Mobile-first PWA prototype for comparing one complete shopping basket across supermarkets.
 
 Version 6 adds strict intent/brand/size matching, full-basket-only optimization,
@@ -36,3 +29,4 @@ matcher intentionally favors a visible unmatched result over an unsafe substitut
 
 The app-shell cache is versioned, network-first, and excludes feed configuration
 and price responses. Increment `CACHE` in `sw.js` for subsequent shell releases.
+
