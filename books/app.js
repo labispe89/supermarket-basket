@@ -1,6 +1,7 @@
 import {DEFAULTS,SOURCES,analyze,settings,validateObservations} from './core.js';
 import {sourceStatus,scanRemote} from './providers.js';
 import {demoData} from './demo.js';
+import {lookupOpenLibrary} from './metadata.js';
 const $=s=>document.querySelector(s), key='book-scanner-v1';
 let rows=[], prefs=settings(), demo=false, latest=[];
 const euro=v=>v===null?'—':new Intl.NumberFormat('el-GR',{style:'currency',currency:'EUR'}).format(v);
@@ -39,6 +40,7 @@ function render(){
 fillSettings();
 if(matchMedia('(max-width: 620px)').matches)$('aside details').open=false;
 function setDate(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());$('#observation').elements.observedAt.value=d.toISOString().slice(0,16);}setDate();
+$('#isbn-lookup').onclick=async()=>{const button=$('#isbn-lookup'),form=$('#observation'),status=$('#metadata-status');button.disabled=true;status.textContent='Αναζήτηση έκδοσης…';try{const book=await lookupOpenLibrary(form.elements.isbn.value);form.elements.isbn.value=book.isbn;form.elements.title.value=book.title;form.elements.author.value=book.author;form.elements.publisher.value=book.publisher;status.replaceChildren(document.createTextNode(`Συμπληρώθηκε από ${book.source}${book.cached?' (τοπικά αποθηκευμένο)':''} · `));const link=node('a','Έλεγχος εγγραφής ↗');link.href=book.sourceUrl;link.target='_blank';link.rel='noopener noreferrer';status.append(link);}catch(err){status.textContent=err.message;}finally{button.disabled=false;}};
 $('#filters').addEventListener('submit',e=>{e.preventDefault();try{prefs=readSettings();save();render();message('Τα φίλτρα εφαρμόστηκαν.');}catch(err){message(err.message,true);}});
 $('#reset').onclick=()=>{prefs=settings();fillSettings();save();render();};
 $('#search').onsubmit=e=>{e.preventDefault();try{prefs=readSettings();render();save();message(`Αναλύθηκαν ${latest.length} πιθανές αγορές.`);}catch(err){message(err.message,true);}};
@@ -53,3 +55,4 @@ for(const source of sourceStatus()){const tile=node('div',undefined,'source-tile
 $('#refresh').onclick=async()=>{const button=$('#refresh');button.disabled=true;try{if(demo)throw Error('Κλείσε πρώτα το συνθετικό δείγμα.');prefs=readSettings();const data=await scanRemote($('#backend').value,$('#token').value,$('#query').value,prefs.sources);rows=validateObservations([...rows.filter(r=>!(r.provenance&&prefs.sources.includes(r.source))&&!data.observations.some(x=>x.id===r.id)),...data.observations]);save();render();$('#remote-status').textContent=(data.statuses||[]).map(s=>s.name+': '+s.note).join(' · ')||'Δεν υπάρχουν συνδεδεμένα feeds.';}catch(err){$('#remote-status').textContent=err.message;}finally{button.disabled=false;}};
 $('#alerts').onclick=async()=>{try{const u=new URL($('#backend').value);if(u.protocol!=='https:')throw Error('Απαιτείται HTTPS.');u.pathname=u.pathname.replace(/\/$/,'')+'/alerts';u.search='';u.hash='';const r=await fetch(u,{headers:{Authorization:'Bearer '+$('#token').value},signal:AbortSignal.timeout(15000),cache:'no-store'});if(!r.ok)throw Error('Οι ειδοποιήσεις δεν είναι διαθέσιμες: '+r.status);$('#alert-results').textContent=JSON.stringify(await r.json(),null,2);}catch(err){$('#alert-results').textContent=err.message;}};
 render();
+
